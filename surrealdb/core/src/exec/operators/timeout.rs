@@ -122,19 +122,19 @@ impl ExecOperator for Timeout {
 			let std_duration: std::time::Duration = duration.0;
 
 			// Create a timeout future
-			let timeout_instant = tokio::time::Instant::now() + std_duration;
+			let timeout_instant = crate::timer::Instant::now() + std_duration;
 
 			futures::pin_mut!(input_stream);
 
 			loop {
 				// Check if we've exceeded the timeout
-				let remaining = timeout_instant.saturating_duration_since(tokio::time::Instant::now());
+				let remaining = timeout_instant.saturating_duration_since(crate::timer::Instant::now());
 				if remaining.is_zero() {
 					Err(ControlFlow::Err(anyhow::anyhow!(Error::QueryTimedout(duration))))?;
 				}
 
 				// Wait for next batch with timeout
-				let batch_result = tokio::time::timeout(
+				let batch_result = crate::timer::timeout(
 					remaining,
 					input_stream.next()
 				).await;

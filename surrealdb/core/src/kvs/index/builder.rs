@@ -9,7 +9,7 @@ use futures::channel::oneshot::{Receiver, Sender, channel};
 #[cfg(not(target_family = "wasm"))]
 use tokio::spawn;
 use tokio::sync::RwLock;
-use tokio::time::sleep;
+use crate::timer::sleep;
 use uuid::Uuid;
 #[cfg(target_family = "wasm")]
 use wasm_bindgen_futures::spawn_local as spawn;

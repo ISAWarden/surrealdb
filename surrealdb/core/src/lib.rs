@@ -41,6 +41,7 @@ pub mod str;
 #[cfg(feature = "surrealism")]
 mod surrealism;
 mod sys;
+mod timer;
 
 pub mod api;
 pub mod catalog;

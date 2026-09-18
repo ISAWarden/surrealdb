@@ -26,7 +26,7 @@ use surrealdb_types::{AuthError, Error as TypesError, SurrealValue, object};
 #[cfg(not(target_family = "wasm"))]
 use tokio::spawn;
 use tokio::sync::Notify;
-use tokio::time::{Instant, sleep, timeout, timeout_at};
+use crate::timer::{Instant, sleep, timeout, timeout_at};
 use tokio_util::sync::CancellationToken;
 use tracing::{debug, instrument, trace, warn};
 use uuid::Uuid;

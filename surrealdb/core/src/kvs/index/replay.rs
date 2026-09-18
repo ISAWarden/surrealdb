@@ -7,7 +7,7 @@ use chrono::Utc;
 use reblessive::TreeStack;
 use revision::revisioned;
 use serde::{Deserialize, Serialize};
-use tokio::time::sleep;
+use crate::timer::sleep;
 use uuid::Uuid;
 use web_time::Instant;
 

@@ -1,5 +1,5 @@
 use anyhow::Result;
-use tokio::time::timeout;
+use crate::timer::timeout;
 
 use crate::ctx::FrozenContext;
 use crate::dbs::Options;
@@ -46,7 +46,7 @@ impl SleepStatement {
 		#[cfg(target_family = "wasm")]
 		let sleep_fut = wasmtimer::tokio::sleep(self.duration.0);
 		#[cfg(not(target_family = "wasm"))]
-		let sleep_fut = tokio::time::sleep(self.duration.0);
+		let sleep_fut = crate::timer::sleep(self.duration.0);
 		match ctx.cancel_token() {
 			Some(token) => {
 				tokio::select! {

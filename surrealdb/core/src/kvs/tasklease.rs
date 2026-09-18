@@ -6,7 +6,7 @@ use chrono::{DateTime, Duration, Utc};
 use rand::Rng;
 use revision::revisioned;
 use serde::{Deserialize, Serialize};
-use tokio::time::sleep;
+use crate::timer::sleep;
 use tokio_util::sync::CancellationToken;
 use tracing::trace;
 use uuid::Uuid;
@@ -537,7 +537,7 @@ mod tests {
 	use temp_dir::TempDir;
 	use tokio::sync::Notify;
 	#[cfg(feature = "kv-mem")]
-	use tokio::time::sleep;
+	use crate::timer::sleep;
 	use uuid::Uuid;
 
 	use crate::kvs::ds::{DatastoreFlavor, TransactionFactory};

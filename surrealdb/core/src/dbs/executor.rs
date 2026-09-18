@@ -485,7 +485,10 @@ impl Executor {
 
 		/// Guard that aborts a spawned task when dropped, ensuring the
 		/// timeout task is cleaned up when execution finishes or errors.
+		#[cfg(not(target_family = "wasm"))]
 		struct AbortOnDrop(tokio::task::JoinHandle<()>);
+		#[cfg(target_family = "wasm")]
+		struct AbortOnDrop(futures::future::AbortHandle);
 		impl Drop for AbortOnDrop {
 			fn drop(&mut self) {
 				self.0.abort();
@@ -511,12 +514,26 @@ impl Executor {
 		// the cancellation token (e.g. SleepPlan, long-running scans)
 		// stop promptly instead of running to completion.
 		// AbortOnDrop ensures the task is cleaned up when execution finishes.
+		#[cfg(not(target_family = "wasm"))]
 		let _timeout_guard = self.ctx.timeout().map(|timeout| {
 			let token = cancellation.clone();
 			AbortOnDrop(tokio::spawn(async move {
-				tokio::time::sleep(timeout).await;
+				crate::timer::sleep(timeout).await;
 				token.cancel();
 			}))
+		});
+
+		#[cfg(target_family = "wasm")]
+		let _timeout_guard = self.ctx.timeout().map(|timeout| {
+			let token = cancellation.clone();
+			let (handle, registration) = futures::future::AbortHandle::new_pair();
+			wasm_bindgen_futures::spawn_local(async move {
+				let _ = futures::future::Abortable::new(async move {
+					crate::timer::sleep(timeout).await;
+					token.cancel();
+				}, registration).await;
+			});
+			AbortOnDrop(handle)
 		});
 
 		// Build the root context using cached session info. The context
@@ -1034,7 +1051,7 @@ impl Executor {
 
 		let exec_result = match kvs.transaction_timeout() {
 			Some(timeout) => {
-				match tokio::time::timeout(
+				match crate::timer::timeout(
 					timeout,
 					self.execute_plan_in_transaction(Arc::clone(&txn), start, plan),
 				)
@@ -1162,7 +1179,7 @@ impl Executor {
 		match kvs.transaction_timeout() {
 			Some(timeout) => {
 				let start_results = self.results.len();
-				match tokio::time::timeout(
+				match crate::timer::timeout(
 					timeout,
 					self.execute_begin_statement_inner(kvs, Arc::clone(&txn), stream),
 				)

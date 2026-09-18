@@ -69,12 +69,12 @@ features = ["kv-mem", "kv-rocksdb", "http", "scripting", "graphql", "gql"]
 targets = []
 
 [dependencies]
-surrealdb-strand = { workspace = true }
+surrealdb-strand = { version = "3.2.4", default-features = false }
 
 # External surreal crates
 surrealmx = { workspace = true, optional = true }
 surrealkv = { workspace = true, optional = true }
-surrealml-core = { workspace = true, optional = true }
+surrealml-core = { version = "0.1", optional = true }
 
 affinitypool = { workspace = true, optional = true }
 async-trait = { workspace = true, optional = true }
@@ -95,8 +95,8 @@ lexicmp.workspace = true
 reblessive = { workspace = true, features = ["tree"] }
 revision = { workspace = true }
 storekey.workspace = true
-surrealdb-types = { workspace = true }
-surrealdb-collections = { workspace = true }
+surrealdb-types = { version = "3.2.4" }
+surrealdb-collections = { version = "3.2.4" }
 vart.workspace = true
 
 # External KV stores
@@ -227,7 +227,7 @@ tokio = { workspace = true, default-features = false, features = [
 tokio-tungstenite = { workspace = true, optional = true }
 tokio-util.workspace = true
 uuid = { workspace = true, features = ["serde", "v4", "v7"] }
-surrealism-runtime = { workspace = true, optional = true }
+surrealism-runtime = { version = "0.5", optional = true }
 
 # OS-SPECIFIC ALLOCATOR DEPENDENCIES
 [target.'cfg(all(any(target_arch = "x86_64", target_arch = "x86"), any(target_os = "linux", target_os = "macos"), not(target_env = "msvc")))'.dependencies]

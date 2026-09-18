@@ -1,6 +1,6 @@
 use anyhow::Result;
 use chrono::Utc;
-use tokio::time::sleep;
+use crate::timer::sleep;
 
 use super::builder::{IndexKey, IndexMutation};
 use super::state::{catalog_still_references_index, is_condition_not_met};
